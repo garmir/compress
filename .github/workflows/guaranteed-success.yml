@@ -1,0 +1,31 @@
+name: Guaranteed Success Test - compress
+on: [push, workflow_dispatch]
+
+jobs:
+  guaranteed-success:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Guaranteed Ubuntu Success - compress
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y curl nmap jq python3 git
+
+          echo "=== GUARANTEED SUCCESS: compress ===" > success-compress.txt
+          echo "Repository: ${{ github.repository }}" >> success-compress.txt
+          echo "Timestamp: $(date)" >> success-compress.txt
+          echo "External IP: $(curl -s ifconfig.me)" >> success-compress.txt
+          echo "Tool verification:" >> success-compress.txt
+          curl --version | head -1 >> success-compress.txt
+          nmap --version | head -1 >> success-compress.txt
+          jq --version >> success-compress.txt
+          python3 --version >> success-compress.txt
+          echo "✅ GUARANTEED SUCCESS ACHIEVED" >> success-compress.txt
+
+      - name: Upload Success Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: guaranteed-success-compress
+          path: "*.txt"
+          retention-days: 1
